@@ -7,8 +7,6 @@ A full-stack web app that:
 - Classifies emails using OpenAI (via LangChain.js) into:
   - Important, Promotions, Social, Marketing, Spam, General
 
-This README provides exact instructions to set up, run, test, and submit per the assignment.
-
 ---
 
 ## Screenshots (placeholders)
