@@ -1,4 +1,4 @@
-# Gmail Classifier App (MagicSlides.app Intern Assignment)
+# Gmail Classifier App
 
 A full-stack web app that:
 - Authenticates users with Google OAuth
