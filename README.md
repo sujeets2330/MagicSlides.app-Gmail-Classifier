@@ -158,8 +158,6 @@ Usage:
   }
   \`\`\`
 
-Model: GPT‑4o family via LangChain.js (`@langchain/openai`).
-
 ---
 
 ## Classification Categories (Required)
