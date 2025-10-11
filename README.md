@@ -190,18 +190,6 @@ Model: GPT‑4o family via LangChain.js (`@langchain/openai`).
 
 ---
 
-## Submission (Exact Instructions)
-
-- Include this README with setup and run instructions
-- Ensure code is well‑documented and follows best practices
-- Share your GitHub project link with @theindianappguy
-- Send an email to: theindianappguy@gmail.com with:
-  - GitHub repo link
-  - Short overview (stack, routes, how to run)
-  - Confirmation that you added the evaluator as a Google OAuth Test user
-- Remember: Add the evaluator’s email as a test user (Google verification policy)
-
----
 
 ## Notes on Data & Privacy
 
