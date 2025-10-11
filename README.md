@@ -87,8 +87,6 @@ Security/Data Handling:
      - http://localhost:3000/api/auth/google/callback
    - Copy your Client ID and Client Secret
 
-Important (Submission Requirement): Google verification blocks public access. During testing, only “Test users” can use the app. Make sure to add the evaluator’s email: theindianappguy@gmail.com.
-
 ---
 
 ## Environment Variables
