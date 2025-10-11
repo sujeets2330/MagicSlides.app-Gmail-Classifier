@@ -174,7 +174,7 @@ Usage:
 ## Troubleshooting
 
 - 403 access_denied: “App is being tested; only developer-approved testers”
-  - Fix: Add the login email to OAuth consent screen → Test users, including theindianappguy@gmail.com. Ensure you’re using the correct project and OAuth Client.
+  - Fix: Add the login email to OAuth consent screen → Test users, including testersample@gmail.com. Ensure you’re using the correct project and OAuth Client.
 - “Invalid redirect_uri”:
   - Ensure redirect URI is exactly http://localhost:3000/api/auth/google/callback in both Google Console and the app.
 - No refresh_token:
