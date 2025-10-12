@@ -9,7 +9,7 @@ A full-stack web app that:
 
 ---
 
-## Screenshots (placeholders)
+## Screenshots
 
 - App dashboard (Before login)  
   ![Dashboard](screenshots/dashboard.png)
