@@ -8,3 +8,4 @@ export async function GET(req: NextRequest) {
   const url = getAuthUrl(origin, state)
   return NextResponse.redirect(url)
 }
+ 

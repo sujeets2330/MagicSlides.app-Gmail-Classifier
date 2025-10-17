@@ -7,3 +7,4 @@ export async function GET() {
   const at = c.get(COOKIE_AT)?.value
   return NextResponse.json({ authenticated: Boolean(at) })
 }
+ 

@@ -1,73 +1,106 @@
-import { type NextRequest, NextResponse } from "next/server"
-import { AllowedCategories, normalizeCategory } from "@/lib/categories"
-import { ChatOpenAI } from "@langchain/openai"
+import { type NextRequest, NextResponse } from "next/server";
+import { normalizeCategory } from "@/lib/categories";
+import { ChatOpenAI } from "@langchain/openai";
 
 type EmailInput = {
-  id: string
-  from?: string
-  subject?: string
-  snippet?: string
-  bodyText?: string
-}
+  id: string;
+  from?: string;
+  subject?: string;
+  snippet?: string;
+  bodyText?: string;
+};
 
 export async function POST(req: NextRequest) {
-  const { emails, openaiKey } = (await req.json()) as {
-    emails: EmailInput[]
-    openaiKey: string
-  }
-
-  if (!openaiKey || typeof openaiKey !== "string") {
-    return new NextResponse("Missing OpenAI key", { status: 400 })
-  }
-  if (!Array.isArray(emails) || emails.length === 0) {
-    return new NextResponse("No emails provided", { status: 400 })
-  }
-
-  const model = new ChatOpenAI({
-    apiKey: openaiKey,
-    model: "gpt-4o-mini", // GPT-4o family as requested
-    temperature: 0,
-  })
-
-  // Build a simple, robust prompt per email to return exactly one category.
-  async function classifyOne(e: EmailInput): Promise<string> {
-    const content = [
-      `You are an email classifier. Choose the single best category for the email from this exact set: ${AllowedCategories.join(", ")}.`,
-      `Return only the category text. No extra words.`,
-      `Definitions:`,
-      `- Important: Personal or work-related and may require attention.`,
-      `- Promotions: Sales, discounts, marketing campaigns.`,
-      `- Social: From social networks, friends, or family.`,
-      `- Marketing: Marketing, newsletters, notifications.`,
-      `- Spam: Unwanted or unsolicited emails.`,
-      `- General: If none match above.`,
-      `Email:`,
-      `From: ${e.from || "Unknown"}`,
-      `Subject: ${e.subject || "(No Subject)"}`,
-      `Snippet: ${e.snippet || ""}`,
-      `Body: ${(e.bodyText || "").slice(0, 1200)}`,
-      `Category:`,
-    ].join("\n")
-
-    const res = await model.invoke([{ role: "user", content }])
-    return (res.content as any)?.trim?.() ?? "General"
-  }
-
   try {
-    // Simple concurrency
-    const pairs = await Promise.all(
-      emails.map(async (e) => {
-        const raw = await classifyOne(e)
-        const cat = normalizeCategory(String(raw))
-        return [e.id, cat] as const
-      }),
-    )
+    const { emails } = await req.json() as { 
+      emails: EmailInput[]; 
+    };
 
-    const classifications: Record<string, string> = {}
-    for (const [id, cat] of pairs) classifications[id] = cat
+    console.log("Classification request received for", emails?.length, "emails");
 
-    return NextResponse.json({ classifications })
-  } catch (e: any) {
-    return new NextResponse(e?.message || "Classification error", { status: 500 })
+    // Use environment variable for OpenAI key directly
+    const openaiKey = process.env.OPENAI_API_KEY;
+
+    if (!openaiKey) {
+      console.error("Missing OpenAI API key in environment variables");
+      return NextResponse.json(
+        { error: "OpenAI API key not configured on server. Please check your .env file." },
+        { status: 500 }
+      );
+    }
+
+    if (!Array.isArray(emails) || emails.length === 0) {
+      console.error("No emails provided");
+      return NextResponse.json(
+        { error: "No emails provided for classification" },
+        { status: 400 }
+      );
+    }
+
+    console.log("Initializing OpenAI model with environment key...");
+    const model = new ChatOpenAI({
+      apiKey: openaiKey,
+      model: "gpt-4o-mini",
+      temperature: 0,
+      maxTokens: 10,
+    });
+
+    async function classifyOne(e: EmailInput): Promise<string> {
+      const prompt = `Classify this email into exactly one of these categories: Important, Promotions, Social, Marketing, Spam, General.
+
+From: ${e.from || "Unknown"}
+Subject: ${e.subject || "No Subject"}
+Preview: ${e.snippet || "No preview"}
+Body: ${(e.bodyText || "No body").substring(0, 500)}
+
+ONLY respond with the category name.`;
+
+      try {
+        console.log(`Classifying email: ${e.id.substring(0, 10)}...`);
+        const res = await model.invoke([{ role: "user", content: prompt }]);
+        const raw = (res.content as any)?.trim?.() ?? "General";
+        const category = normalizeCategory(raw);
+        console.log(`Email ${e.id.substring(0, 10)}... classified as: ${category}`);
+        return category;
+      } catch (error: any) {
+        console.error(`Classification error for email ${e.id}:`, error.message);
+        return "General";
+      }
+    }
+
+    // Process emails in smaller batches to avoid rate limits
+    const batchSize = 3;
+    const pairs: [string, string][] = [];
+    
+    for (let i = 0; i < emails.length; i += batchSize) {
+      const batch = emails.slice(i, i + batchSize);
+      console.log(`Processing batch ${Math.floor(i/batchSize) + 1} of ${Math.ceil(emails.length/batchSize)}`);
+      
+      const batchResults = await Promise.all(
+        batch.map(async (e) => [e.id, await classifyOne(e)] as const)
+      );
+      pairs.push(...batchResults);
+      
+      // Add delay between batches to avoid rate limiting
+      if (i + batchSize < emails.length) {
+        console.log("Waiting 1 second before next batch...");
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+    }
+
+    const classifications: Record<string, string> = {};
+    
+    for (const [id, cat] of pairs) {
+      classifications[id] = cat;
+    }
+
+    console.log("Classification completed successfully");
+    return NextResponse.json({ classifications });
+  } catch (error: any) {
+    console.error("Classification route error:", error);
+    return NextResponse.json(
+      { error: `Internal server error: ${error.message}` },
+      { status: 500 }
+    );
   }
 }

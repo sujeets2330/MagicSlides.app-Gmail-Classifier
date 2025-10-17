@@ -1,4 +1,4 @@
- import { cookies } from "next/headers"
+import { cookies } from "next/headers"
 import type { NextRequest } from "next/server"
 
 const GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth"
@@ -99,4 +99,4 @@ export async function clearCookie(name: string) {
 export async function getCookie(name: string) {
   const c = await cookies()
   return c.get(name)?.value
-}
+} 
