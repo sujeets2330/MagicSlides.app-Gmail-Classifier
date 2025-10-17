@@ -88,19 +88,16 @@ Security/Data Handling:
    - Copy your Client ID and Client Secret
 
 ---
-
 ## Environment Variables
 
-Create `.env.local` (for local dev) with:
+Create `.env.local` (for local development) with:
 
-\`\`\`
-GOOGLE_CLIENT_ID=YOUR_GOOGLE_CLIENT_ID
-GOOGLE_CLIENT_SECRET=YOUR_GOOGLE_CLIENT_SECRET
-# Optional if your code expects it:
-# GOOGLE_REDIRECT_URI=http://localhost:3000/api/auth/google/callback
-\`\`\`
-
-Do NOT put an OpenAI key here. The app asks the user for their OpenAI key at runtime and stores it in localStorage, per the assignment.
+```env
+GOOGLE_CLIENT_ID=your_google_client_id_here
+GOOGLE_CLIENT_SECRET=your_google_client_secret_here
+OPENAI_API_KEY=your_openai_api_key_here
+NEXTAUTH_URL=http://localhost:3000
+```
 
 ---
 
