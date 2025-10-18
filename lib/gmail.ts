@@ -24,7 +24,7 @@ export type EmailItem = {
   date?: string;
 };
 
-// 🔹 Step 1: Fetch message IDs
+// Step 1: Fetch message IDs
 export async function listMessageIds(accessToken: string, max: number) {
   const url = new URL("https://gmail.googleapis.com/gmail/v1/users/me/messages");
   url.searchParams.set("maxResults", String(max));
@@ -44,7 +44,7 @@ export async function listMessageIds(accessToken: string, max: number) {
   return (data.messages || []).map((m) => m.id);
 }
 
-// 🔹 Step 2: Fetch each message by ID
+// Step 2: Fetch each message by ID
 export async function getMessage(accessToken: string, id: string) {
   const url = `https://gmail.googleapis.com/gmail/v1/users/me/messages/${id}?format=full`;
   const res = await fetch(url, {
@@ -60,7 +60,7 @@ export async function getMessage(accessToken: string, id: string) {
   return (await res.json()) as GmailMessage;
 }
 
-// 🔹 Step 3: Fetch and extract email details
+// Step 3: Fetch and extract email details
 export async function fetchEmails(accessToken: string, max: number): Promise<EmailItem[]> {
   const ids = await listMessageIds(accessToken, max);
 
@@ -83,7 +83,7 @@ export async function fetchEmails(accessToken: string, max: number): Promise<Ema
   return items;
 }
 
-// 🔹 Step 4: Extract text from nested MIME parts
+// Step 4: Extract text from nested MIME parts
 function extractText(payload?: GmailMessage["payload"]): string {
   if (!payload) return "";
 
