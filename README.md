@@ -96,6 +96,7 @@ Create `.env.local` (for local development) with:
 GOOGLE_CLIENT_ID=your_google_client_id_here
 GOOGLE_CLIENT_SECRET=your_google_client_secret_here
 OPENAI_API_KEY=your_openai_api_key_here
+GOOGLE_REDIRECT_URI=http://localhost:3000/api/auth/google/callback
 NEXTAUTH_URL=http://localhost:3000
 ```
 
