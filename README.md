@@ -118,7 +118,7 @@ Usage:
 
 ---
 
-## API Reference (Implemented)
+## API Reference
 
 - GET /api/auth/google/start  
   Starts Google OAuth with scopes: gmail.readonly, openid, email, profile
@@ -158,7 +158,7 @@ Usage:
 
 ---
 
-## Classification Categories (Required)
+## Classification Categories
 
 - Important: Personal or work-related; requires attention
 - Promotions: Sales, discounts, campaigns
@@ -190,3 +190,7 @@ Usage:
 - OAuth tokens are held in HTTP-only cookies; the OpenAI key is not stored server-side
 
 ---
+
+## Author
+- Name : Sujeet M A
+- Email: sujeetmalagundi999@gmail.com
