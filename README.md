@@ -191,6 +191,6 @@ Usage:
 
 ---
 
-## Author
+## Contact 
 - Name : Sujeet M A
 - Email: sujeetmalagundi999@gmail.com
