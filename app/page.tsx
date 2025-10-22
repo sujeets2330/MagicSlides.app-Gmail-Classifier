@@ -101,6 +101,12 @@ export default function HomePage() {
   }
 
   function saveKey() {
+  // Check if key already exists
+  if (hasOpenAIKey) {
+    alert("OpenAI key is already saved in localStorage!");
+    return;
+  }
+
   // Check if emails exist in localStorage
   const storedEmails = localStorage.getItem(LS_KEYS.emails);
   const emailsExist = storedEmails && JSON.parse(storedEmails).length > 0;
@@ -411,7 +417,7 @@ function FilterPill({
           ? "bg-primary text-primary-foreground" 
           : "bg-card hover:bg-accent"
       )}
-      aria-pressed={active}
+      // aria-pressed={active}
     >
       {label}
       {typeof count === "number" ? (
