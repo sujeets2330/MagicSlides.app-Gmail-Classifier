@@ -93,25 +93,39 @@ export default function HomePage() {
   }
 
   async function logout() {
-    localStorage.clear();
+    // Only clear authentication, keep all localStorage data
     await fetch("/api/auth/logout", { method: "POST" });
     setIsAuthed(false);
-    setEmails([]);
-    setClassifications({});
-    setHasOpenAIKey(false);
     setActiveCategory("All");
+    // Don't clear emails, classifications, or OpenAI key from state or localStorage
   }
 
   function saveKey() {
-    // For demo purposes, we'll save a placeholder key
-    // In real scenario, you might want to get this from user input or server
-    const demoKey = "sk-demo-key-saved-to-localstorage";
-    localStorage.setItem(LS_KEYS.openaiKey, demoKey);
-    setHasOpenAIKey(true);
-    alert("OpenAI API key saved to localStorage!");
+  // Check if emails exist in localStorage
+  const storedEmails = localStorage.getItem(LS_KEYS.emails);
+  const emailsExist = storedEmails && JSON.parse(storedEmails).length > 0;
+
+  if (!emailsExist) {
+    alert("No emails found in localStorage. Fetch emails first before saving key.");
+    return;
   }
 
+  const demoKey = "sk-demo-key-saved-to-localstorage";
+  localStorage.setItem(LS_KEYS.openaiKey, demoKey);
+  setHasOpenAIKey(true);
+  alert("OpenAI API key saved to localStorage!");
+}
+
   function deleteLocalStorage() {
+    // Check if emails exist in localStorage
+    const storedEmails = localStorage.getItem(LS_KEYS.emails);
+    const emailsExist = storedEmails && JSON.parse(storedEmails).length > 0;
+
+    if (!emailsExist) {
+      alert("No emails found in localStorage to delete.");
+      return;
+    }
+
     if (confirm("Are you sure you want to delete all localStorage data? This will remove all saved emails and classifications.")) {
       localStorage.removeItem(LS_KEYS.emails);
       localStorage.removeItem(LS_KEYS.lastClassifications);

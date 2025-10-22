@@ -1,5 +1,5 @@
-import { type NextRequest, NextResponse } from "next/server";
-import {
+import { type NextRequest, NextResponse } from "next/server"; 
+import {  // app/api/gmail/fetch/route.ts - THIS IS SERVER-SIDE
   COOKIE_AT,
   COOKIE_EXP,
   COOKIE_RT,
